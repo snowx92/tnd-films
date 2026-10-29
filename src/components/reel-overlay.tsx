@@ -36,9 +36,14 @@ export function ReelOverlay({ open, onClose }: ReelOverlayProps) {
   }
 
   return (
-    <div className="fixed inset-0 z-[85] bg-canvas">
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-label="TND Films showreel"
+      className="fixed inset-0 z-[85] flex items-center justify-center bg-canvas/95 backdrop-blur-sm"
+    >
       <video
-        className="h-full w-full object-cover"
+        className="max-h-full w-full object-contain"
         autoPlay
         controls
         playsInline
@@ -49,7 +54,8 @@ export function ReelOverlay({ open, onClose }: ReelOverlayProps) {
       <button
         type="button"
         onClick={onClose}
-        className="absolute top-5 right-5 rounded-full border border-ink/25 px-4 py-2 text-[11px] tracking-[0.2em] uppercase hover:border-signal hover:text-signal"
+        autoFocus
+        className="absolute top-5 right-5 rounded-full border border-ink/25 bg-canvas/60 px-4 py-2 text-[11px] tracking-[0.2em] uppercase hover:border-signal hover:text-signal"
       >
         Close / Esc
       </button>

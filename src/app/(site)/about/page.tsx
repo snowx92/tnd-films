@@ -1,56 +1,70 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import { ProcessSection } from "@/components/process-section";
-import { TeamSection } from "@/components/team-section";
+import { aboutCopy } from "@/components/about-intro";
+import { ClientsMarquee } from "@/components/clients-marquee";
 import { Handwritten } from "@/components/handwritten";
+import { ProcessSection } from "@/components/process-section";
 import { Reveal } from "@/components/reveal";
+import { TeamSection } from "@/components/team-section";
+import { site } from "@/data/site";
 
 export const metadata: Metadata = {
   title: "About",
+  description: site.description,
 };
 
 export default function AboutPage() {
   return (
     <div className="pt-20">
-      <section className="relative mx-5 min-h-[72svh] overflow-hidden rounded-sm md:mx-8">
+      <section className="relative mx-5 min-h-[78svh] overflow-hidden rounded-sm md:mx-8">
         <Image
-          src="https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?auto=format&fit=crop&w=2000&q=80"
-          alt="On set at TND Films"
+          src="/media/bts/b14.jpg"
+          alt="On set with TND Films"
           fill
-          priority
+          loading="eager"
+          fetchPriority="high"
           sizes="100vw"
-          className="object-cover"
+          className="object-cover object-[50%_30%]"
         />
-        <div className="absolute inset-0 bg-linear-to-t from-canvas via-canvas/20 to-transparent" />
-        <div className="absolute inset-x-0 bottom-0 flex items-end justify-between p-6 md:p-8">
-          <h1 className="font-display text-[clamp(3.2rem,10vw,7rem)] leading-none tracking-tight uppercase">
-            About us
-          </h1>
-          <p className="hidden text-[10px] tracking-[0.2em] text-ink/70 uppercase md:block">
-            Scroll to view more ↓
-          </p>
+        <div className="absolute inset-0 bg-linear-to-t from-canvas via-canvas/30 to-canvas/10" />
+        <div className="absolute inset-x-0 bottom-0 flex flex-wrap items-end justify-between gap-4 p-6 md:p-8">
+          <div>
+            <p className="text-[11px] tracking-[0.28em] text-ink/80 uppercase">
+              {site.location}
+            </p>
+            <h1 className="font-display mt-2 text-[clamp(3.4rem,11vw,9rem)] leading-[0.82] tracking-tight uppercase">
+              Tough nature
+              <br />
+              dominates.
+            </h1>
+          </div>
+          <Handwritten className="text-4xl md:text-5xl">about us</Handwritten>
         </div>
       </section>
 
-      <section className="grid gap-10 px-5 py-20 md:grid-cols-2 md:px-8">
-        <Reveal>
-          <p className="max-w-xl text-xl leading-relaxed">
-            TND Films is a creative production agency for e-commerce and
-            automotive. We shoot the object until it feels inevitable, then cut
-            it so a stranger stays.
-          </p>
+      <section className="grid gap-10 px-5 py-20 md:grid-cols-12 md:px-8 md:py-28">
+        <Reveal className="md:col-span-5">
+          <h2 className="font-display text-5xl leading-[0.9] tracking-tight uppercase md:text-7xl">
+            The house
+            <br />
+            behind the cut.
+          </h2>
         </Reveal>
-        <Reveal delay={0.08}>
-          <p className="max-w-xl text-xl leading-relaxed text-mute">
-            Product films, launch spots, stills that hold a grid. One crew, two
-            temperatures: warm glass and cold metal. If you sell something
-            people want to own, we know how to light it.{" "}
-            <Handwritten className="text-3xl">always</Handwritten>
-          </p>
-        </Reveal>
+        <div className="flex flex-col gap-6 md:col-span-6 md:col-start-7">
+          {aboutCopy.map((line, index) => (
+            <Reveal key={line} delay={index * 0.06}>
+              <p className={index === 0 ? "text-xl leading-relaxed md:text-2xl" : "text-lg leading-relaxed text-mute"}>
+                {line}
+              </p>
+            </Reveal>
+          ))}
+        </div>
       </section>
 
-      <TeamSection />
+      <div id="crew">
+        <TeamSection full />
+      </div>
+      <ClientsMarquee />
       <ProcessSection />
     </div>
   );

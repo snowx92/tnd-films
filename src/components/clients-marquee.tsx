@@ -1,48 +1,76 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { projects } from "@/data/projects";
+import { clients } from "@/data/site";
 import { gsap, prefersReducedMotion } from "@/lib/gsap";
+import { cn } from "@/lib/utils";
+
+const half = Math.ceil(clients.length / 2);
+const rows = [clients.slice(0, half), clients.slice(half)];
 
 export function ClientsMarquee() {
-  const trackRef = useRef<HTMLDivElement>(null);
-  const names = [
-    ...projects.map((project) => project.client),
-    ...projects.map((project) => project.client),
-  ];
+  const rootRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
-    const track = trackRef.current;
-    if (!track || prefersReducedMotion()) {
+    const root = rootRef.current;
+    if (!root || prefersReducedMotion()) {
       return;
     }
 
-    const tween = gsap.to(track, {
-      xPercent: -50,
-      duration: 28,
-      ease: "none",
-      repeat: -1,
-    });
+    const ctx = gsap.context(() => {
+      gsap.utils.toArray<HTMLElement>("[data-marquee]").forEach((track, index) => {
+        const reverse = index % 2 === 1;
+        const tween = gsap.fromTo(
+          track,
+          { xPercent: reverse ? -50 : 0 },
+          { xPercent: reverse ? 0 : -50, duration: 42, ease: "none", repeat: -1 },
+        );
+        track.addEventListener("mouseenter", () => gsap.to(tween, { timeScale: 0.2, duration: 0.6 }));
+        track.addEventListener("mouseleave", () => gsap.to(tween, { timeScale: 1, duration: 0.6 }));
+      });
+    }, root);
 
-    return () => {
-      tween.kill();
-    };
+    return () => ctx.revert();
   }, []);
 
   return (
-    <section className="overflow-hidden border-y border-ink/10 py-8">
-      <p className="mb-6 px-5 text-[11px] tracking-[0.28em] text-mute uppercase md:px-8">
-        Selected clients
-      </p>
-      <div ref={trackRef} className="flex w-max gap-10 pr-10">
-        {names.map((name, index) => (
-          <span
-            key={`${name}-${index}`}
-            className="font-display text-5xl tracking-tight text-ink/80 uppercase md:text-7xl"
-          >
-            {name}
-            <span className="text-signal">,</span>
-          </span>
+    <section
+      ref={rootRef}
+      aria-label="Selected clients"
+      className="overflow-hidden border-y border-ink/10 py-10 md:py-14"
+    >
+      <div className="mb-8 flex items-baseline justify-between px-5 md:px-8">
+        <p className="text-[11px] tracking-[0.28em] text-mute uppercase">
+          Selected clients
+        </p>
+        <p className="text-[11px] tracking-[0.28em] text-mute uppercase">
+          {clients.length} brands and artists
+        </p>
+      </div>
+      <div className="flex flex-col gap-3">
+        {rows.map((row, rowIndex) => (
+          <div key={rowIndex} data-marquee className="flex w-max">
+            {[0, 1].map((copy) => (
+              <ul
+                key={copy}
+                aria-hidden={copy === 1 || undefined}
+                className="flex shrink-0 gap-10 pr-10"
+              >
+                {row.map((name) => (
+                  <li
+                    key={name}
+                    className={cn(
+                      "font-display text-5xl tracking-tight whitespace-nowrap uppercase transition-colors duration-300 hover:text-signal md:text-7xl",
+                      rowIndex === 0 ? "text-ink/85" : "text-transparent [-webkit-text-stroke:1px_var(--ink)] hover:[-webkit-text-stroke:1px_var(--signal)]",
+                    )}
+                  >
+                    {name}
+                    <span className="text-signal [-webkit-text-stroke:0]">,</span>
+                  </li>
+                ))}
+              </ul>
+            ))}
+          </div>
         ))}
       </div>
     </section>

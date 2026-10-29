@@ -1,30 +1,20 @@
 import type { Metadata } from "next";
 import { WorkIndex } from "@/components/work-index";
 import { projects } from "@/data/projects";
-import type { Vertical } from "@/lib/types";
+import { isCategory } from "@/lib/types";
 
 export const metadata: Metadata = {
   title: "Work",
+  description:
+    "Fashion, automotive, F&B, events and music videos by TND Films. Every project, sorted by what moves.",
 };
 
 type WorkPageProps = {
-  searchParams: Promise<{ v?: string }>;
+  searchParams: Promise<{ c?: string }>;
 };
 
-function parseFilter(value?: string): "all" | Vertical {
-  switch (value) {
-    case "ecommerce":
-    case "automotive":
-      return value;
-    default:
-      return "all";
-  }
-}
-
 export default async function WorkPage({ searchParams }: WorkPageProps) {
-  const params = await searchParams;
+  const { c } = await searchParams;
 
-  return (
-    <WorkIndex projects={projects} initialFilter={parseFilter(params.v)} />
-  );
+  return <WorkIndex projects={projects} initialFilter={isCategory(c) ? c : "all"} />;
 }

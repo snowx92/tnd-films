@@ -1,44 +1,71 @@
+export type Department =
+  | "founders"
+  | "creative"
+  | "business"
+  | "production"
+  | "post"
+  | "camera"
+  | "legal";
+
 export type TeamMember = {
-  name: string;
+  first: string;
+  last: string;
   role: string;
-  image: string;
+  department: Department;
+  /** Portrait path once the team shoot is done; initials are shown until then. */
+  image?: string;
 };
 
-export const team: TeamMember[] = [
+export function departmentLabel(department: Department): string {
+  switch (department) {
+    case "founders":
+      return "Founder";
+    case "creative":
+      return "Creative team";
+    case "business":
+      return "Business developers";
+    case "production":
+      return "Production";
+    case "post":
+      return "Post-production";
+    case "camera":
+      return "Camera / Photo";
+    case "legal":
+      return "Legal";
+    default: {
+      const _exhaustive: never = department;
+      return _exhaustive;
+    }
+  }
+}
+
+export const teamGroups: { title: string; departments: Department[] }[] = [
+  { title: "Founders", departments: ["founders"] },
+  { title: "Creative + business", departments: ["creative", "business"] },
   {
-    name: "Noor Vale",
-    role: "Founder & Director",
-    image:
-      "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=1200&q=80",
-  },
-  {
-    name: "Aria Kessler",
-    role: "Head of Production",
-    image:
-      "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=1200&q=80",
-  },
-  {
-    name: "Julian Marsh",
-    role: "Director of Photography",
-    image:
-      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=1200&q=80",
-  },
-  {
-    name: "Sable Reed",
-    role: "Editor",
-    image:
-      "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=1200&q=80",
-  },
-  {
-    name: "Omar Idris",
-    role: "Colorist",
-    image:
-      "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=1200&q=80",
-  },
-  {
-    name: "Lena Park",
-    role: "Producer",
-    image:
-      "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=1200&q=80",
+    title: "Production + post + support",
+    departments: ["production", "post", "camera", "legal"],
   },
 ];
+
+export const team: TeamMember[] = [
+  { first: "Kareem", last: "Zahran", role: "Founder & Chairman", department: "founders" },
+  { first: "Marwan", last: "Helaly", role: "Co-founder & Executive Producer", department: "founders" },
+  { first: "Adam", last: "Zahera", role: "Co-founder & Executive Producer", department: "founders" },
+  { first: "Solly", last: "Man", role: "Co-founder & DOP", department: "founders" },
+  { first: "Momen", last: "Amin", role: "Co-founder & Director", department: "founders" },
+  { first: "Nour", last: "Magdy", role: "Head of Creative Team", department: "creative" },
+  { first: "Habiba", last: "Nehad", role: "Creative Director", department: "creative" },
+  { first: "Hala", last: "Mohamed", role: "Creative Director", department: "creative" },
+  { first: "Mostafa", last: "Yasser", role: "Head of Business Developers", department: "business" },
+  { first: "Menna", last: "Galal", role: "Business Developer Lead", department: "business" },
+  { first: "Yasmin", last: "Amr", role: "Business Developer", department: "business" },
+  { first: "Ali", last: "Ashraf", role: "Producer", department: "production" },
+  { first: "Mohamed", last: "Mosa", role: "Producer", department: "production" },
+  { first: "Zeyad", last: "Nour", role: "Editor", department: "post" },
+  { first: "Hatem", last: "", role: "Editor", department: "post" },
+  { first: "Youssef", last: "Eid", role: "Assistant Camera & Photo Editor", department: "camera" },
+  { first: "Ahmed", last: "Gamal", role: "Head of Legal Department", department: "legal" },
+];
+
+export const founders = team.filter((member) => member.department === "founders");

@@ -60,8 +60,55 @@ body {
   overflow: hidden;
 }
 
+.leader-skip [data-film-leader] {
+  display: none;
+}
+
+/* If scripts never run, do not leave the intro covering the page. */
+[data-film-leader] {
+  animation: leader-fallback 0s linear 6s forwards;
+}
+
+@keyframes leader-fallback {
+  to {
+    visibility: hidden;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .film-grain {
     display: none;
+  }
+}
+
+@keyframes grade-wipe {
+  0%,
+  100% {
+    clip-path: inset(0 0 0 78%);
+  }
+  50% {
+    clip-path: inset(0 0 0 22%);
+  }
+}
+
+@keyframes wheel-drift {
+  0%,
+  100% {
+    transform: translate(-50%, -50%);
+  }
+  33% {
+    transform: translate(-10%, -90%);
+  }
+  66% {
+    transform: translate(-90%, -20%);
+  }
+}
+
+@keyframes playhead {
+  from {
+    left: 1.75rem;
+  }
+  to {
+    left: 100%;
   }
 }

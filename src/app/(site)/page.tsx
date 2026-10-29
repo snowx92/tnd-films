@@ -4,7 +4,7 @@ import { FeaturedWork } from "@/components/featured-work";
 import { IndustrySplit } from "@/components/industry-split";
 import { ProcessSection } from "@/components/process-section";
 import { ReelHero } from "@/components/reel-hero";
-import { ServicesScroller } from "@/components/services-scroller";
+import { ShootIndex } from "@/components/shoot-index";
 import { SloganSection } from "@/components/slogan-section";
 import { TeamSection } from "@/components/team-section";
 
@@ -12,14 +12,14 @@ export default function HomePage() {
   return (
     <>
       <ReelHero />
+      <ClientsMarquee />
       <AboutIntro />
       <SloganSection />
       <IndustrySplit />
-      <ServicesScroller heading="h2" />
+      <ShootIndex />
+      <ProcessSection />
       <FeaturedWork />
       <TeamSection />
-      <ClientsMarquee />
-      <ProcessSection />
     </>
   );
 }
