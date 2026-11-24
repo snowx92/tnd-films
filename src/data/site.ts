@@ -4,7 +4,7 @@ export const site = {
   name: "TND Films",
   shortName: "TND",
   motto: "Tough Nature Dominates",
-  email: "hello@tndfilms.com",
+  email: "hello@tndfilms.net",
   location: "Maadi, Cairo",
   tagline: "We don't make ads. We make moments.",
   description:

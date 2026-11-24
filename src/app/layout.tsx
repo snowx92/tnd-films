@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { Big_Shoulders, Caveat, Sora } from "next/font/google";
+import { Analytics } from "@/components/analytics";
 import { CustomCursor } from "@/components/custom-cursor";
 import { FilmGrain } from "@/components/film-grain";
 import { FilmLeader } from "@/components/film-leader";
@@ -57,6 +58,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           <CustomCursor />
           {children}
         </SmoothScroll>
+        <Analytics />
       </body>
     </html>
   );

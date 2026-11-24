@@ -2,6 +2,7 @@
 
 import { useState, type FormEvent } from "react";
 import { budgetRanges, type BudgetRange } from "@/data/site";
+import { trackLead } from "@/lib/analytics";
 import { inquiryCategories, inquiryLabel, type InquiryCategory } from "@/lib/inquiry";
 import { cn } from "@/lib/utils";
 import { Handwritten } from "@/components/handwritten";
@@ -60,6 +61,7 @@ export function ContactForm() {
         return;
       }
 
+      trackLead({ category: inquiryLabel(category), budget });
       setStatus("success");
       form.reset();
       setCategory("fashion");

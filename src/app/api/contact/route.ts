@@ -26,37 +26,51 @@ export async function POST(request: Request) {
 
   const key = process.env.RESEND_API_KEY;
   const from = process.env.CONTACT_FROM_EMAIL;
+  const to = process.env.CONTACT_TO_EMAIL || site.email;
+  const subject = `New brief: ${parsed.brand} / ${inquiryLabel(parsed.category)} / ${parsed.budget}`;
+  const text = [
+    `Name: ${parsed.name}`,
+    `Email: ${parsed.email}`,
+    `Brand / business: ${parsed.brand}`,
+    `Category: ${inquiryLabel(parsed.category)}`,
+    `Budget (production fees only): ${parsed.budget}`,
+    "",
+    parsed.message,
+  ].join("\n");
 
-  if (key && from) {
-    const response = await fetch("https://api.resend.com/emails", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${key}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        from,
-        to: [site.email],
-        reply_to: parsed.email,
-        subject: `New brief: ${parsed.brand} / ${inquiryLabel(parsed.category)} / ${parsed.budget}`,
-        text: [
-          `Name: ${parsed.name}`,
-          `Email: ${parsed.email}`,
-          `Brand / business: ${parsed.brand}`,
-          `Category: ${inquiryLabel(parsed.category)}`,
-          `Budget (production fees only): ${parsed.budget}`,
-          "",
-          parsed.message,
-        ].join("\n"),
-      }),
-    });
-
-    if (!response.ok) {
+  // Never tell a visitor their brief arrived when nothing could send it.
+  if (!key || !from) {
+    console.warn(`Contact email is not configured; brief for ${to} was not sent.\n${subject}\n${text}`);
+    if (process.env.NODE_ENV === "production") {
       return NextResponse.json(
-        { ok: false, error: "Mail did not leave the house. Write us directly." },
-        { status: 502 },
+        { ok: false, error: `Our inbox is offline. Write us at ${site.email}.` },
+        { status: 503 },
       );
     }
+    return NextResponse.json({ ok: true });
+  }
+
+  const response = await fetch("https://api.resend.com/emails", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${key}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      from,
+      to: [to],
+      reply_to: parsed.email,
+      subject,
+      text,
+    }),
+  });
+
+  if (!response.ok) {
+    console.error(`Resend rejected the brief (${response.status}): ${await response.text()}`);
+    return NextResponse.json(
+      { ok: false, error: `Mail did not leave the house. Write us at ${site.email}.` },
+      { status: 502 },
+    );
   }
 
   return NextResponse.json({ ok: true });
